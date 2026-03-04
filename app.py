@@ -1,24 +1,195 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-  <path fill="#FDD835" d="M20 2c-3.67 0-7.19 2.75-8.17 6.41C10.98 9.95 12.68 10 14 10h16c1.32 0 3.02-.05 2.17-1.59C27.19 4.75 23.67 2 20 2z"/>
-  <path fill="#FBC02D" d="M38 50c-1.13 0-6.13-1.5-7-8H8c-1 6.5-5.87 8-7 8h37z"/>
-  <path fill="#FF7043" d="M31 20h-4v1c-1.21 0-2.22.37-3 1H20c-2.5 0-4 2-4 4v1c0 1.77 1.34 3.18 3 4h7v1c1.3 0 .25-1.13 3-3v-1c0-2-1.97-4-4-4zm-6 2h4c1.1 0 2-1 2-2s-1-2-2-2h-4c-1.1 0-2 1-2 2s.9 2 2 2z"/>
-  <g fill="#F44336">
-    <path d="M29 20c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm-24-6.41C2.81 21.49 3.61 25 8 28c-1.4 1.58-2 3.5-2 4 0 .83 6 3 18 3s18-2.17 18-3c0-.5-.6-2.42-2-4 4.39-3 5.19-6.51 4.48-10.41C41.4 12.49 38.9 9 35 9c-3.67 0-7.19 2.75-8.17 6.41C26.98 13.95 28.68 14 30 14h3c1.32 0 3.02-.05 2.17-1.59C31.19 8.75 27.67 6 24 6c-7.36 0-13.5 6.74-13.5 14 0 3.57 1.39 8.17 4.78 11.62-4.92 1.08-12.78 3.54-18.23 3.37-1.7-.06-3.46-.82-4.75-1.7C5.29 31.55 3 28.08 3 26c0-1.9 1.43-5.57 5.49-7.65z"/>
-  </g>
-</svg>
+import streamlit as st
+from pathlib import Path
+from mono_b64 import MONO_DATA_URI
 
-# App Structure
+st.set_page_config(page_title="Ferrán", page_icon="🐒", layout="centered")
+
+if "seccion" not in st.session_state:
+    st.session_state.seccion = "portada"
+
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+* { font-family: 'Inter', sans-serif; }
+.stApp { background: #f5f5f0; }
+
+.hero {
+    background: linear-gradient(160deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+    border-radius: 24px;
+    padding: 36px 24px 28px 24px;
+    text-align: center;
+    color: white;
+    margin-bottom: 0;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+}
+.hero-titulo {
+    font-size: 52px; font-weight: 900; letter-spacing: 6px;
+    margin: 10px 0 4px 0; text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.hero-sub { font-size: 13px; opacity: 0.7; letter-spacing: 2px; margin-bottom: 6px; font-weight: 600; text-transform: uppercase; }
+.hero-lema { font-size: 13px; color: #f0c040; font-style: italic; font-weight: bold; }
+.seccion-titulo-bar {
+    font-size: 17px; font-weight: 800; color: #1a1a2e;
+    border-left: 5px solid #f0c040; padding-left: 12px; margin: 22px 0 14px 0;
+}
+.pdf-card {
+    background: white; border-radius: 14px; padding: 18px 20px;
+    margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    display: flex; align-items: center; gap: 14px;
+}
+.pdf-icon { font-size: 32px; }
+.pdf-nombre { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 3px; }
+.pdf-desc { font-size: 12px; color: #777; }
+
+div[data-testid="stHorizontalBlock"]:nth-of-type(1) div[data-testid="column"]:nth-child(1) button {
+    background: linear-gradient(135deg, #c0392b, #922b21) !important;
+    color: white !important; border: none !important; border-radius: 16px !important;
+    min-height: 100px !important; font-size: 15px !important; font-weight: 800 !important;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.2) !important;
+}
+div[data-testid="stHorizontalBlock"]:nth-of-type(1) div[data-testid="column"]:nth-child(2) button {
+    background: linear-gradient(135deg, #1a5276, #154360) !important;
+    color: white !important; border: none !important; border-radius: 16px !important;
+    min-height: 100px !important; font-size: 15px !important; font-weight: 800 !important;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.2) !important;
+}
+div[data-testid="stHorizontalBlock"]:nth-of-type(2) div[data-testid="column"]:nth-child(1) button {
+    background: linear-gradient(135deg, #117a65, #0e6655) !important;
+    color: white !important; border: none !important; border-radius: 16px !important;
+    min-height: 100px !important; font-size: 15px !important; font-weight: 800 !important;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.2) !important;
+}
+div[data-testid="stHorizontalBlock"]:nth-of-type(2) div[data-testid="column"]:nth-child(2) button {
+    background: linear-gradient(135deg, #6c3483, #5b2c6f) !important;
+    color: white !important; border: none !important; border-radius: 16px !important;
+    min-height: 100px !important; font-size: 15px !important; font-weight: 800 !important;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.2) !important;
+}
+.seccion-header {
+    border-radius: 16px; padding: 24px; color: white; text-align: center; margin-bottom: 20px;
+}
+.seccion-titulo-txt { font-size: 26px; font-weight: 900; letter-spacing: 2px; }
+.seccion-sub { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+</style>
+""", unsafe_allow_html=True)
+
+RAMOS = {
+    "matematica": {
+        "nombre": "Matemática", "emoji": "📐",
+        "desc": "Álgebra y Geometría · MATE-10",
+        "color": "#c0392b", "color2": "#922b21",
+        "pdfs": [{"archivo": "mate10_algebra_geometria.pdf",
+                  "nombre": "Programa Álgebra y Geometría",
+                  "desc": "MATE-10 · Programa oficial USM", "icono": "📐"}],
+    },
+    "administracion": {
+        "nombre": "Administración", "emoji": "🏢",
+        "desc": "Administración de Empresas · ICS-111",
+        "color": "#1a5276", "color2": "#154360",
+        "pdfs": [{"archivo": "ics111_administracion_empresas.pdf",
+                  "nombre": "Programa Administración de Empresas",
+                  "desc": "ICS-111 · Programa oficial USM", "icono": "🏢"}],
+    },
+    "economia": {
+        "nombre": "Economía", "emoji": "📊",
+        "desc": "Introducción a la Economía · ICS161",
+        "color": "#117a65", "color2": "#0e6655",
+        "pdfs": [{"archivo": "ics161_introduccion_economia.pdf",
+                  "nombre": "Programa Introducción a la Economía",
+                  "desc": "ICS161 · Programa oficial USM", "icono": "📊"}],
+    },
+    "python": {
+        "nombre": "Python", "emoji": "🐍",
+        "desc": "Próximamente · Guías y ejercicios",
+        "color": "#6c3483", "color2": "#5b2c6f",
+        "pdfs": [],
+    },
+}
 
 def render_portada():
-    # This function would render the portada (cover)
-    pass
+    st.markdown(f"""
+    <div class="hero">
+        <img src="{MONO_DATA_URI}" width="150" height="200"
+             style="display:block;margin:0 auto 10px auto;" alt="Ferrán"/>
+        <div class="hero-titulo">FERRÁN</div>
+        <div class="hero-sub">Repositorio de recursos universitarios</div>
+        <div class="hero-lema">"El conocimiento es el único recurso que crece al compartirse"</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="seccion-titulo-bar">📚 Selecciona tu ramo</div>', unsafe_allow_html=True)
+
+    ramos_lista = list(RAMOS.items())
+    col1, col2 = st.columns(2)
+    with col1:
+        k, d = ramos_lista[0]
+        if st.button(f"{d['emoji']} {d['nombre']}\n{d['desc']}", key=f"b_{k}", use_container_width=True):
+            st.session_state.seccion = k; st.rerun()
+    with col2:
+        k, d = ramos_lista[1]
+        if st.button(f"{d['emoji']} {d['nombre']}\n{d['desc']}", key=f"b_{k}", use_container_width=True):
+            st.session_state.seccion = k; st.rerun()
+
+    col3, col4 = st.columns(2)
+    with col3:
+        k, d = ramos_lista[2]
+        if st.button(f"{d['emoji']} {d['nombre']}\n{d['desc']}", key=f"b_{k}", use_container_width=True):
+            st.session_state.seccion = k; st.rerun()
+    with col4:
+        k, d = ramos_lista[3]
+        if st.button(f"{d['emoji']} {d['nombre']}\n{d['desc']}", key=f"b_{k}", use_container_width=True):
+            st.session_state.seccion = k; st.rerun()
+
+    st.markdown('<div style="text-align:center;margin-top:28px;color:#bbb;font-size:12px;">Ferrán · USM · 2026 🐒</div>', unsafe_allow_html=True)
 
 
-def render_seccion():
-    # This function would render a section of the app
-    pass
+def render_seccion(key_r):
+    data_r = RAMOS[key_r]
+    color, color2 = data_r["color"], data_r["color2"]
+    pdf_dir = Path(__file__).parent / "pdfs"
 
-# Example of using the functions to render
-if __name__ == '__main__':
+    st.markdown(f"""
+    <div class="seccion-header" style="background:linear-gradient(135deg,{color},{color2});">
+        <div style="font-size:40px;">{data_r['emoji']}</div>
+        <div class="seccion-titulo-txt">{data_r['nombre'].upper()}</div>
+        <div class="seccion-sub">{data_r['desc']}</div>
+    </div>""", unsafe_allow_html=True)
+
+    if st.button("← Volver al inicio", key="btn_volver"):
+        st.session_state.seccion = "portada"; st.rerun()
+
+    st.write("")
+    pdfs = data_r.get("pdfs", [])
+
+    if not pdfs:
+        st.markdown("""<div style="background:#f9f9f9;border-radius:14px;padding:30px;text-align:center;color:#aaa;">
+            <div style="font-size:40px;">🚧</div>
+            <div style="font-size:16px;font-weight:700;margin-top:8px;">Próximamente</div>
+            <div style="font-size:13px;margin-top:4px;">Los recursos de este ramo estarán disponibles pronto.</div>
+        </div>""", unsafe_allow_html=True)
+        return
+
+    for m in pdfs:
+        pdf_path = pdf_dir / m["archivo"]
+        st.markdown(f"""<div class="pdf-card">
+            <div class="pdf-icon">{m['icono']}</div>
+            <div><div class="pdf-nombre">{m['nombre']}</div><div class="pdf-desc">{m['desc']}</div></div>
+        </div>""", unsafe_allow_html=True)
+        if pdf_path.exists():
+            with open(pdf_path, "rb") as f:
+                st.download_button(f"⬇️ Descargar {m['nombre']}", data=f,
+                    file_name=m["archivo"], mime="application/pdf",
+                    key=f"dl_{m['archivo']}", use_container_width=True)
+        else:
+            st.warning(f"No encontrado: {m['archivo']}")
+
+    st.markdown('<div style="text-align:center;margin-top:20px;color:#ccc;font-size:11px;">Ferrán · USM · 2026 🐒</div>', unsafe_allow_html=True)
+
+
+s = st.session_state.seccion
+if s == "portada":
     render_portada()
-    render_seccion()
+elif s in RAMOS:
+    render_seccion(s)
+else:
+    st.session_state.seccion = "portada"; st.rerun()
