@@ -1,0 +1,12 @@
+# Secretos de Streamlit — nunca subir al repositorio
+.streamlit/secrets.toml
+
+# Caché de Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Entornos virtuales
+.venv/
+venv/
+env/
